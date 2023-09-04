@@ -233,6 +233,9 @@ const internalNginx = {
 			// Set the IPv6 setting for the host
 			host.ipv6 = internalNginx.ipv6Enabled();
 
+			// Set hosts array by spliting on commas
+			host.forward_hosts = host.forward_host.split(';');
+
 			locationsPromise.then(() => {
 				renderEngine
 					.parseAndRender(template, host)
