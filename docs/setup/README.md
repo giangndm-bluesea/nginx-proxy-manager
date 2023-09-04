@@ -128,8 +128,8 @@ This process can take a couple of minutes depending on your machine.
 ## Default Administrator User
 
 ```
-Email:    admin@example.com
-Password: changeme
+Email:    admin@example.com or setting by env DEFAULT_ADMIN_EMAIL
+Password: changeme or setting by env DEFAULT_ADMIN_PASSWORD
 ```
 
 Immediately after logging in with this default user you will be asked to modify your details and change your password.

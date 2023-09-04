@@ -22,11 +22,11 @@ const setupDefaultUser = () => {
 		.then((row) => {
 			if (!row.count) {
 				// Create a new user and set password
-				logger.info('Creating a new user: admin@example.com with password: changeme');
+				logger.info('Creating a default admin user', config.defaultAdminEmail());
 
 				let data = {
 					is_deleted: 0,
-					email:      'admin@example.com',
+					email:      config.defaultAdminEmail(),
 					name:       'Administrator',
 					nickname:   'Admin',
 					avatar:     '',
@@ -42,7 +42,7 @@ const setupDefaultUser = () => {
 							.insert({
 								user_id: user.id,
 								type:    'password',
-								secret:  'changeme',
+								secret:  config.defaultAdminPassword(),
 								meta:    {},
 							})
 							.then(() => {

@@ -180,5 +180,25 @@ module.exports = {
 	 */
 	useLetsencryptStaging: function () {
 		return !!process.env.LE_STAGING;
+	},
+
+	/**
+	 * Return default admin email
+	 * 
+	 * @returns {string}
+	 */
+
+	defaultAdminEmail: function () {
+		return process.env.DEFAULT_ADMIN_EMAIL || 'admin@example.com';
+	},
+
+	/**
+	 * Return default admin password
+	 * 
+	 * @returns {string}
+	 */
+
+	defaultAdminPassword: function () {
+		return process.env.DEFAULT_ADMIN_PASSWORD || 'changeme';
 	}
 };
