@@ -7,6 +7,7 @@ async function appStart () {
 	const setup               = require('./setup');
 	const app                 = require('./app');
 	const apiValidator        = require('./lib/validator/api');
+	const internalProxyHost   = require('./internal/proxy-host');
 	const internalCertificate = require('./internal/certificate');
 	const internalIpRanges    = require('./internal/ip_ranges');
 
@@ -17,7 +18,7 @@ async function appStart () {
 		})
 		.then(internalIpRanges.fetch)
 		.then(() => {
-
+			internalProxyHost.initTimer();
 			internalCertificate.initTimer();
 			internalIpRanges.initTimer();
 

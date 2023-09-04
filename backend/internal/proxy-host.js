@@ -12,6 +12,47 @@ function omissions () {
 }
 
 const internalProxyHost = {
+	synced_hosts: {},
+
+	initTimer: () => {
+		setInterval(() => {
+			/**
+			 * Sync Hosts to Nginx Config, this is used for syncing between clusters
+			 *
+			 */
+			let query = proxyHostModel
+					.query()
+					.where('is_deleted', 0)
+					.allowGraph('[owner,access_list,access_list.[clients,items],certificate]')
+					.withGraphFetched('[' + ['owner', 'certificate', 'access_list.[clients,items]'].join(', ') + ']')
+					.groupBy('id')
+
+			return query.then(utils.omitRows(omissions()))
+				.then((rows) => {
+					return Promise.all(rows.map((row) => {
+						if (!row.enabled) {
+							// No need to add nginx config if host is disabled
+							return internalNginx.deleteConfig('proxy_host', row)
+								.then(() => {
+									return internalNginx.reload();
+								});
+						}
+						if (internalProxyHost.synced_hosts[row.id] == row.modified_on.getTime()) {
+							// No need to sync if host hasn't changed
+							return;
+						}
+						
+						// Configure nginx
+						return internalNginx.configure(proxyHostModel, 'proxy_host', row, true)
+							.then(() => {
+								internalProxyHost.synced_hosts[row.id] = row.modified_on.getTime();
+							});
+					})).then(() => {
+						return rows.length;
+					})
+				});
+		}, 5000);
+	},
 
 	/**
 	 * @param   {Access}  access

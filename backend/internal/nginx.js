@@ -19,9 +19,10 @@ const internalNginx = {
 	 * @param   {Object|String}  model
 	 * @param   {String}         host_type
 	 * @param   {Object}         host
+	 * @param   {boolean}        for_sync
 	 * @returns {Promise}
 	 */
-	configure: (model, host_type, host) => {
+	configure: (model, host_type, host, for_sync) => {
 		let combined_meta = {};
 
 		return internalNginx.test()
@@ -39,6 +40,9 @@ const internalNginx = {
 				// Test nginx again and update meta with result
 				return internalNginx.test()
 					.then(() => {
+						if (for_sync)
+							return;
+						
 						// nginx is ok
 						combined_meta = _.assign({}, host.meta, {
 							nginx_online: true,
@@ -68,6 +72,9 @@ const internalNginx = {
 						if (config.debug()) {
 							logger.error('Nginx test failed:', valid_lines.join('\n'));
 						}
+
+						if (for_sync)
+							return;
 
 						// config is bad, update meta and delete config
 						combined_meta = _.assign({}, host.meta, {
