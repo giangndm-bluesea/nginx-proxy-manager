@@ -1,8 +1,7 @@
-name: docker
+name: auto
 
 on:
-  release:
-    types: [published]
+  push:
     branches: ["develop", "stage", "release" ]
 
 jobs:
